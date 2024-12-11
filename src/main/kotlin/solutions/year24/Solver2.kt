@@ -2,36 +2,24 @@ package solutions.year24
 
 import kotlin.math.abs
 
-class Solver2 {
-    var rows: Array<IntArray>
-
-    constructor(rows: Array<Array<String>>) {
-        this.rows = rows.map { it.map { it.toInt() }.toIntArray() }.toTypedArray()
-    }
+class Solver2(rows: Array<Array<String>>) {
+    private var rows: Array<IntArray> = rows.map { row -> row.map { it.toInt() }.toIntArray() }.toTypedArray()
 
     fun solveFirstPart(): Int {
-        return rows.map { it -> isSafe(it) }.count { it }
+        return rows.map { isSafe(it) }.count { it }
     }
 
     fun solveSecondPart(): Int {
-        return rows.map { it -> isSafeRemovalPermutations(it) }.count { it }
+        return rows.map { isSafeRemovalPermutations(it) }.count { it }
     }
 
-    fun isSafe(row: IntArray): Boolean {
+    private fun isSafe(row: IntArray): Boolean {
         // Sorted asc
-        var sortedAsc: Boolean
-        if (pairsSortedAscWithCondition(row).all { it }) {
-            sortedAsc = true
-        } else if (pairsSortedDescWithCondition(row).all { it }) {
-            sortedAsc = false
-        } else {
-            return false
-        }
-        return true
+        return pairsSortedAscWithCondition(row).all { it } || pairsSortedDescWithCondition(row).all { it }
     }
 
     // Dummy method with permutations
-    fun isSafeRemovalPermutations(row: IntArray): Boolean {
+    private fun isSafeRemovalPermutations(row: IntArray): Boolean {
         if (isSafe(row)) {
             return true
         }
@@ -41,7 +29,7 @@ class Solver2 {
             return false
         }
         for (i in row.indices) {
-            var copied = row.copyOf().toMutableList()
+            val copied = row.copyOf().toMutableList()
             copied.removeAt(i)
             if (isSafe(copied.toIntArray())) {
                 return true
@@ -55,8 +43,8 @@ class Solver2 {
         if (isSafe(row)) {
             return true
         }
-        var pairsAsc = pairsSortedAscWithCondition(row)
-        var pairsDesc = pairsSortedDescWithCondition(row)
+        val pairsAsc = pairsSortedAscWithCondition(row)
+        val pairsDesc = pairsSortedDescWithCondition(row)
 
         // If all rows are sorted, the difference condition is not satisfied, and that can't be improved by removing anything
         if (pairsAsc.all { it } || pairsDesc.all { it }) {
@@ -65,14 +53,14 @@ class Solver2 {
 
         // If there is only one unsorted element
         if (pairsAsc.count { !it } == 1) {
-            var idx = pairsAsc.indexOf(false)
+            val idx = pairsAsc.indexOf(false)
             if (idx == 0) {
                 return true
             }
             return pairSortedAscWithCondition(row[idx - 1], row[idx + 1])
         }
         if (pairsDesc.count { !it } == 1) {
-            var idx = pairsDesc.indexOf(false)
+            val idx = pairsDesc.indexOf(false)
             if (idx == 0) {
                 return true
             }

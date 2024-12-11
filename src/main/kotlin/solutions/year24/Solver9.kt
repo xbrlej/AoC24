@@ -13,7 +13,7 @@ class Solver9(private val inputArray: IntArray) {
         return calculateChecksumBlocks(blocks)
     }
 
-    fun createMemory(): Array<Int?> {
+    private fun createMemory(): Array<Int?> {
         val memory = mutableListOf<Int?>()
         var emptyBlock = false
         var counter = 0
@@ -33,7 +33,7 @@ class Solver9(private val inputArray: IntArray) {
         return memory.toTypedArray()
     }
 
-    fun rearrangeMemoryFragmented(memory: Array<Int?>) {
+    private fun rearrangeMemoryFragmented(memory: Array<Int?>) {
         var forwardPointer = 0
         var backwardPointer = memory.size - 1
 
@@ -51,11 +51,11 @@ class Solver9(private val inputArray: IntArray) {
         }
     }
 
-    fun rearrangeMemoryWithoutFragments(compact: IntArray): List<Triple<Int, Boolean, Int>> {
+    private fun rearrangeMemoryWithoutFragments(compact: IntArray): List<Triple<Int, Boolean, Int>> {
         // Blocks = [(fileId, isFile, fileSize), ...]
-        var blocks = compact.withIndex().map {Triple(it.index / 2, it.index % 2 == 0, it.value)}.toMutableList()
+        var blocks = compact.withIndex().map { Triple(it.index / 2, it.index % 2 == 0, it.value) }.toMutableList()
         val fileBlocks = blocks.filter { it.second }
-        for(i in fileBlocks.size-1 downTo 0) {
+        for (i in fileBlocks.size - 1 downTo 0) {
             val fileBlock = fileBlocks[i]
             val fileIndex = blocks.indexOf(fileBlock)
             for ((spaceIndex, spaceBlock) in blocks.withIndex()) {
@@ -74,11 +74,17 @@ class Solver9(private val inputArray: IntArray) {
         return blocks
     }
 
-    fun fitBlock(blocks: MutableList<Triple<Int, Boolean, Int>>, spaceBlock: Triple<Int, Boolean, Int>, fileBlock: Triple<Int, Boolean, Int>, fileIndex: Int, spaceIndex: Int): MutableList<Triple<Int, Boolean, Int>> {
+    private fun fitBlock(
+        blocks: MutableList<Triple<Int, Boolean, Int>>,
+        spaceBlock: Triple<Int, Boolean, Int>,
+        fileBlock: Triple<Int, Boolean, Int>,
+        fileIndex: Int,
+        spaceIndex: Int
+    ): MutableList<Triple<Int, Boolean, Int>> {
         if (spaceIndex > fileIndex) {
             return blocks
         }
-         // Replace file block with empty mem
+        // Replace file block with empty mem
         blocks.removeAt(fileIndex)
         blocks.add(fileIndex, Triple(fileBlock.first, false, fileBlock.third))
 
@@ -86,24 +92,24 @@ class Solver9(private val inputArray: IntArray) {
         blocks.removeAt(spaceIndex)
         blocks.add(spaceIndex, fileBlock)
         if (fileBlock.third < spaceBlock.third) {
-            blocks.add(spaceIndex+1, Triple(spaceBlock.first, false, spaceBlock.third - fileBlock.third))
+            blocks.add(spaceIndex + 1, Triple(spaceBlock.first, false, spaceBlock.third - fileBlock.third))
         }
         return blocks
     }
 
-    fun calculateChecksumBlocks(blocks: List<Triple<Int, Boolean, Int>>): Long {
+    private fun calculateChecksumBlocks(blocks: List<Triple<Int, Boolean, Int>>): Long {
         var idx = 0
         var result = 0L
         for (block in blocks) {
             if (block.second) {
-                result += IntRange(idx, idx+block.third-1).sum().toLong() * block.first.toLong()
+                result += IntRange(idx, idx + block.third - 1).sum().toLong() * block.first.toLong()
             }
             idx += block.third
         }
         return result
     }
 
-    fun calculateChecksum(memory: Array<Int?>): Long {
+    private fun calculateChecksum(memory: Array<Int?>): Long {
         var cs = 0L
         for ((i, elem) in memory.withIndex()) {
             if (elem == null) {

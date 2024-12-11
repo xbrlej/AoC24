@@ -1,8 +1,8 @@
 package solutions.year24
 
-class Solver5(val rules: Array<Pair<Int, Int>>, val updates: Array<IntArray>) {
+class Solver5(private val rules: Array<Pair<Int, Int>>, private val updates: Array<IntArray>) {
 
-    fun updateValidation(update: IntArray): Int {
+    private fun updateValidation(update: IntArray): Int {
         for (i in update.copyOfRange(0, update.size - 1).indices) {
             for (j in IntRange(i+1, update.size - 1)) {
                 if (rules.contains(Pair(update[j], update[i]))) {
@@ -22,13 +22,13 @@ class Solver5(val rules: Array<Pair<Int, Int>>, val updates: Array<IntArray>) {
         return updates.filter {updateValidation(it) == 0}.sumOf { update -> middleElem((sortByRules(update).toTypedArray())) }
     }
 
-    fun sortByRules(input: IntArray): IntArray {
+    private fun sortByRules(input: IntArray): IntArray {
         val result = input.copyOf()
         for (i in result.indices) {
             for (j in result.indices) {
                 if (rules.contains(Pair(result[i], result[j])) && i > j) {
                     // Swap
-                    var tmp = result[i]
+                    val tmp = result[i]
                     result[i] = result[j]
                     result[j] = tmp
                 }
@@ -37,7 +37,7 @@ class Solver5(val rules: Array<Pair<Int, Int>>, val updates: Array<IntArray>) {
         return result
     }
 
-    fun <T>middleElem(input: Array<T>): T {
+    private fun <T>middleElem(input: Array<T>): T {
         return input[input.size / 2]
     }
 }

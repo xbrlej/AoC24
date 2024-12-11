@@ -2,7 +2,7 @@ package solutions.year24
 
 import utils.CombinatoricsUtils.getXNaryVariations
 
-class Solver7(val rows: Array<LongArray>) {
+class Solver7(private val rows: Array<LongArray>) {
     fun solveFirstPart(): Long {
         return rows.filter { isRowSolvable(it, false) }.sumOf { it[0] }
     }
@@ -11,7 +11,7 @@ class Solver7(val rows: Array<LongArray>) {
         return rows.filter { isRowSolvable(it, true) }.sumOf { it[0] }
     }
 
-    fun isRowSolvable(row: LongArray, concat: Boolean): Boolean {
+    private fun isRowSolvable(row: LongArray, concat: Boolean): Boolean {
         val rowResult = row[0]
         val radix = if (concat) {
             3

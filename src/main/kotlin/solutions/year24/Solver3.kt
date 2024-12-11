@@ -12,8 +12,8 @@ class Solver3(private val input: String) {
         return result
     }
 
-    fun parseMul(expr: String): Pair<Int, Int> {
-        var nums = expr.split("mul(")[1].split(")")[0].split(",")
+    private fun parseMul(expr: String): Pair<Int, Int> {
+        val nums = expr.split("mul(")[1].split(")")[0].split(",")
         return Pair(nums[0].toInt(), nums[1].toInt())
     }
 
@@ -33,7 +33,7 @@ class Solver3(private val input: String) {
         return processMatchList(matchList)
     }
 
-    fun processMatchList(matchList: List<MatchResult> ): Int {
+    private fun processMatchList(matchList: List<MatchResult> ): Int {
         var result = 0
         var nextEnabled = true
         for (match in matchList) {

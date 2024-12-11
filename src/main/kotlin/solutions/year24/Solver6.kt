@@ -5,17 +5,15 @@ import utils.GridUtils.isInGrid
 import utils.GridUtils.move
 import utils.GridUtils.rotateRight
 
-class Solver6 {
-    var grid: Array<CharArray>
-    val unmodifiableGrid: Array<CharArray>
-    val initDirection: Pair<Int, Int> = Pair(-1, 0)
-    var direction = initDirection
-    val initLocation: Pair<Int, Int>
-    var location: Pair<Int, Int>
-    var history: MutableSet<Triple<Int, Int, Pair<Int, Int>>> = HashSet()
+class Solver6(private var grid: Array<CharArray>) {
+    private val unmodifiableGrid: Array<CharArray>
+    private val initDirection: Pair<Int, Int> = Pair(-1, 0)
+    private var direction = initDirection
+    private val initLocation: Pair<Int, Int>
+    private var location: Pair<Int, Int>
+    private var history: MutableSet<Triple<Int, Int, Pair<Int, Int>>> = HashSet()
 
-    constructor(grid: Array<CharArray>) {
-        this.grid = grid
+    init {
         this.unmodifiableGrid = grid.map { it.copyOf() }.toTypedArray()
         val startLocations = locationsOf(grid.map{it.toTypedArray()}.toTypedArray(), '^')
         assert(startLocations.size == 1)
@@ -56,9 +54,9 @@ class Solver6 {
         return count
     }
 
-    fun step(rotateHist: Boolean): Boolean {
+    private fun step(rotateHist: Boolean): Boolean {
         val newLoc = move(location, direction, 1)
-        var fin: Boolean
+        val fin: Boolean
         if (!isInGrid(grid.map { it.toTypedArray() }.toTypedArray(), newLoc)) {
             fin = true
 //            grid[location.first][location.second] = 'X'
@@ -80,7 +78,7 @@ class Solver6 {
         return !fin
     }
 
-    fun resetGrid() {
+    private fun resetGrid() {
         grid = unmodifiableGrid.map { it.copyOf() }.toTypedArray()
         location = initLocation
         direction = initDirection

@@ -6,12 +6,10 @@ import utils.GridUtils.gridDistance
 import utils.GridUtils.isInGrid
 import utils.GridUtils.move
 
-class Solver8 {
-    val grid: Array<CharArray>
-    val charsToProcess: CharArray
+class Solver8(private val grid: Array<CharArray>) {
+    private val charsToProcess: CharArray
 
-    constructor(grid: Array<CharArray>) {
-        this.grid = grid
+    init {
         val charList = mutableListOf<Char>()
         grid.forEach { row -> charList.addAll(row.filter { it != '.' }) }
         this.charsToProcess = charList.toCharArray()
