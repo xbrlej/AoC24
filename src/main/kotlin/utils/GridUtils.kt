@@ -37,7 +37,7 @@ object GridUtils {
     }
 
     fun gridDistance(locationA: Pair<Int, Int>, locationB: Pair<Int, Int>): Pair<Int, Int> {
-        return Pair(locationB.first - locationA.first, locationB.second - locationA.second)
+        return locationB - locationA
     }
 
     operator fun Pair<Int, Int>.minus(other: Pair<Int, Int>): Pair<Int, Int> {
