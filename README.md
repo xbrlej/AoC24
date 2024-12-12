@@ -1,3 +1,3 @@
 ## Advent of Code 2024 solutions
 
-Currently done - Days 1-10
+Currently done - Days 1-11
