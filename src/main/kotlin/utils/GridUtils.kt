@@ -15,10 +15,6 @@ object GridUtils {
         return -rotateRight(direction)
     }
 
-    fun turnAround(direction: Pair<Int, Int>): Pair<Int, Int> {
-        return -direction
-    }
-
     fun<T> isInGrid(grid: Array<Array<T>>, loc: Pair<Int, Int>): Boolean {
         return loc.first >= 0 && loc.second >= 0 &&
                 loc.first < grid.size && loc.second < grid[loc.first].size
@@ -26,8 +22,6 @@ object GridUtils {
 
     fun<T> locationsOf(grid: Array<Array<T>>, elem: T): Array<Pair<Int, Int>> {
         var result: MutableList<Pair<Int, Int>> = mutableListOf()
-        val x = grid.map{it.contains(elem)}.indexOf(true)
-        val y = grid[x].indexOf(elem)
         val rowsIndicesToCheck = grid.indices.filter{grid[it].contains(elem)}
         for (index in rowsIndicesToCheck) {
             var locations = grid[index].withIndex().filter{it.value == elem}.map { Pair(index, it.index) }
