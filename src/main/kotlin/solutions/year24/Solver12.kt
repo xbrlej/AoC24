@@ -12,7 +12,7 @@ class Solver12(val input: Array<CharArray>) {
         for ((rowIndex, row) in input.withIndex()) {
             for ((colIndex, col) in row.withIndex()) {
                 if (!locationBoundaryMap.any { region -> region.key.contains(Pair(rowIndex, colIndex))}) {
-                    val region = getRegion(col, rowIndex, colIndex)
+                    val region = GridUtils.getRegion(typed, col, rowIndex, colIndex)
                     val boundary = getBoundaryCount(region.toTypedArray(), col)
                     locationBoundaryMap[region] = boundary
                 }
@@ -30,7 +30,7 @@ class Solver12(val input: Array<CharArray>) {
         for ((rowIndex, row) in input.withIndex()) {
             for ((colIndex, col) in row.withIndex()) {
                 if (!locationBoundaryMap.any { region -> region.key.contains(Pair(rowIndex, colIndex))}) {
-                    val region = getRegion(col, rowIndex, colIndex)
+                    val region = GridUtils.getRegion(typed, col, rowIndex, colIndex)
                     val boundary = getBoundaryCount(region.toTypedArray(), col)
                     locationBoundaryMap[region] = boundary
                 }
@@ -107,26 +107,5 @@ class Solver12(val input: Array<CharArray>) {
             }
         }
         return sideCount
-    }
-
-    private fun getRegion(flower: Char, x: Int ,y: Int): Set<Pair<Int, Int>> {
-        val directions = GridUtils.basicDirections
-        val queue = mutableListOf<Pair<Int, Int>>(Pair(x, y))
-        val result = mutableSetOf<Pair<Int, Int>>(Pair(x, y))
-        while (queue.size != 0) {
-            val elem = queue.removeFirst()
-            for (dir in directions) {
-                val neighbour = GridUtils.move(elem, dir, 1)
-                val size = result.size
-                if (GridUtils.isInGrid(typed, neighbour) && input[neighbour.first][neighbour.second] == flower) {
-                    result.add(neighbour)
-                }
-                // Add to processing if not tracked yet
-                if (result.size != size) {
-                    queue.add(neighbour)
-                }
-            }
-        }
-        return result
     }
 }
