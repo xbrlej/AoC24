@@ -1,7 +1,17 @@
 package utils
 
+/**
+ * Helper class for operations in a 2D grid
+ * This class is **stateless**, it only calculates coordinates and vectors
+ */
 object GridUtils {
-    val basicDirections: Array<Pair<Int, Int>> = arrayOf(Pair(-1, 0), Pair(0, 1), Pair(1, 0), Pair(0, -1))
+
+    val UP = Pair(-1, 0)
+    val RIGHT = Pair(0, 1)
+    val DOWN = Pair(1, 0)
+    val LEFT = Pair(0, -1)
+
+    val basicDirections: Array<Pair<Int, Int>> = arrayOf(UP, RIGHT, DOWN, LEFT)
     val diagonalDirections: Array<Pair<Int, Int>> = arrayOf(Pair(-1, -1), Pair(-1, 1), Pair(1, -1), Pair(1, 1))
     val allDirections = basicDirections + diagonalDirections
 
@@ -48,7 +58,7 @@ object GridUtils {
         }
         val queue = mutableListOf(Pair(x, y))
         val result = mutableSetOf(Pair(x, y))
-        while (queue.size != 0) {
+        while (queue.isNotEmpty()) {
             val elem = queue.removeFirst()
             for (dir in directions) {
                 val neighbour = move(elem, dir, 1)
@@ -63,6 +73,34 @@ object GridUtils {
             }
         }
         return result
+    }
+
+    fun getLocationsInDirection(gridSize: Pair<Int, Int>, location: Pair<Int, Int>, direction: Pair<Int, Int>): List<Pair<Int, Int>> {
+        var counter = 1
+        var newLoc = move(location, direction, counter)
+        val possibleLocations = mutableListOf<Pair<Int, Int>>()
+        while (isInGrid(gridSize, newLoc)) {
+            possibleLocations.add(newLoc)
+            counter += 1
+            newLoc = move(location, direction, counter)
+        }
+        return possibleLocations
+    }
+
+    fun getNeighbours(location: Pair<Int, Int>): Array<Pair<Int, Int>> {
+        var result = Array(4) {Pair(0, 0)}
+        for ((idx, dir) in basicDirections.withIndex()) {
+            result[idx] = location + dir
+        }
+        return result
+    }
+
+    fun oneDimensionalIndex(rowSize: Int, location: Pair<Int, Int>): Int {
+        return location.first * rowSize + location.second
+    }
+
+    fun twoDimensionalIndex(rowSize: Int, index: Int): Pair<Int, Int> {
+        return Pair(index / rowSize, index % rowSize)
     }
 
     operator fun Pair<Int, Int>.minus(other: Pair<Int, Int>): Pair<Int, Int> {

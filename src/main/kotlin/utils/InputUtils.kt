@@ -30,4 +30,11 @@ object InputUtils {
     fun readFile(file: File): String {
         return file.readText();
     }
+
+    /**
+     * Transform a 2D array of string with single character to 2D array of chars
+     */
+    fun stringGridToCharGrid(stringGrid: Array<Array<String>>): Array<Array<Char>> {
+        return stringGrid.map { it.map { it[0] }.toTypedArray() }.toTypedArray()
+    }
 }
