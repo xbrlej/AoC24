@@ -4,11 +4,31 @@ import java.util.*
 
 object GraphUtils {
 
-    // NOT MY CODE, this is the simplest dijkstra in kotlin, reference https://www.baeldung.com/kotlin/dijkstra-algorithm-graphs
-    fun dijkstraWithLoops(graph: Map<Int, List<Pair<Int, Int>>>, start: Int): Map<Int, Int> {
-        val distances = mutableMapOf<Int, Int>().withDefault { Int.MAX_VALUE }
-        val priorityQueue = PriorityQueue<Pair<Int, Int>>(compareBy { it.second })
-        val visited = mutableSetOf<Pair<Int, Int>>()
+    fun<T> breadthFirstSearchDistances(graph: Map<T, List<T>>, start: T): Map<T, Int> {
+        val queue = LinkedList<T>()
+        val visitedFromPrevious = mutableMapOf<T, T?>()
+        val distances = mutableMapOf<T, Int>().withDefault { Int.MAX_VALUE }
+        queue.add(start)
+        visitedFromPrevious[start] = null
+        distances[start] = 0
+
+        while (queue.isNotEmpty()) {
+            val node = queue.poll()
+            graph[node]?.forEach {
+                if (!visitedFromPrevious.contains(it)) {
+                    queue.add(it)
+                    visitedFromPrevious[it] = node
+                    distances[it] = distances[node]?.plus(1)!!
+                }
+            }
+        }
+        return distances
+    }
+
+    fun<T> dijkstraWithLoops(graph: Map<T, List<Pair<T, Int>>>, start: T): Map<T, Int> {
+        val distances = mutableMapOf<T, Int>().withDefault { Int.MAX_VALUE }
+        val priorityQueue = PriorityQueue<Pair<T, Int>>(compareBy { it.second })
+        val visited = mutableSetOf<Pair<T, Int>>()
 
         priorityQueue.add(start to 0)
         distances[start] = 0
