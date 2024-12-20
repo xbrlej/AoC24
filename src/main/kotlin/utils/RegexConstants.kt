@@ -8,4 +8,6 @@ object RegexConstants {
     val POSITIVE_NUMBER = Regex("\\d*\\.?\\d+")
     val NEGATIVE_NUMBER = Regex("-\\d*\\.?\\d+")
     val NUMBER = Regex("-?\\d*\\.{0,1}\\d+")
+    val LETTERS = Regex("[a-zA-Z]+")
+    val LETTER = Regex("[a-zA-Z]")
 }

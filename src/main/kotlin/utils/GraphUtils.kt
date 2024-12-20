@@ -1,6 +1,7 @@
 package utils
 
 import java.util.*
+import kotlin.collections.Map.Entry
 
 object GraphUtils {
 
@@ -49,7 +50,7 @@ object GraphUtils {
     }
 
     // Modification of the method above
-    fun dijkstraWithLoopsAndPathCount(graph: Map<Int, List<Pair<Int, Int>>>, start: Int, end: Int): Pair<Int, Set<Int>> {
+    fun dijkstraWithLoopsAndPaths(graph: Map<Int, List<Pair<Int, Int>>>, start: Int, end: Int): Pair<Int, MutableList<Pair<Int, MutableList<Int>>>> {
         val distances = mutableMapOf<Int, Pair<Int, MutableList<Int>>>().withDefault { Pair(Int.MAX_VALUE, mutableListOf()) }
         val priorityQueue = PriorityQueue<Pair<Int, Int>>(compareBy { it.second })
         val visited = mutableSetOf<Pair<Int, Int>>()
@@ -75,19 +76,20 @@ object GraphUtils {
         }
         val endDistAndPrev = distances[end]
         requireNotNull(endDistAndPrev)
-        val result = mutableSetOf<Int>()
         var prevs = endDistAndPrev.second
+        val visitedPrevs = mutableSetOf(end)
+        val prevList = mutableListOf(Pair(end, prevs))
         while (prevs.isNotEmpty()) {
-            val newPrevs = mutableSetOf<Int>()
+            val newPrevs = mutableListOf<Int>()
             for (prev in prevs) {
-                if (prev in result) {
-                    continue
+                if (prev !in visitedPrevs) {
+                    visitedPrevs.add(prev)
+                    newPrevs.addAll(distances[prev]!!.second)
                 }
-                result.add(prev)
-                distances[prev]?.let { newPrevs.addAll(it.second) }
+                prevList.add(Pair(prev, distances[prev]!!.second))
             }
-            prevs = newPrevs.toMutableList()
+            prevs = newPrevs
         }
-        return Pair(endDistAndPrev.first, result)
+        return Pair(endDistAndPrev.first, prevList)
     }
 }

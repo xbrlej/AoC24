@@ -1,5 +1,7 @@
 package utils
 
+import kotlin.math.abs
+
 /**
  * Helper class for operations in a 2D grid
  * This class is **stateless**, it only calculates coordinates and vectors
@@ -49,6 +51,11 @@ object GridUtils {
         return locationB - locationA
     }
 
+    fun gridAbsDistance(locationA: Pair<Int, Int>, locationB: Pair<Int, Int>): Int {
+        val gridDist = gridDistance(locationA, locationB)
+        return abs(gridDist.first) + abs(gridDist.second)
+    }
+
     fun<T> getRegion(input: Array<Array<T>>, flower: T, x: Int ,y: Int, includeDiagonalDirections: Boolean = false): Set<Pair<Int, Int>> {
         val directions: Array<Pair<Int, Int>>
         if (includeDiagonalDirections) {
@@ -86,6 +93,22 @@ object GridUtils {
         }
         return possibleLocations
     }
+
+    fun getAllLocationsInDistance(gridSize: Pair<Int, Int>, location: Pair<Int, Int>, distance: Int): Set<Pair<Int, Int>> {
+        var locations = mutableSetOf<Pair<Int, Int>>()
+        for (i in 0..distance) {
+            for (j in 0..distance - i) {
+                locations.add(location + Pair(i, j))
+                locations.add(location + Pair(i, -j))
+                locations.add(location + Pair(-i, j))
+                locations.add(location + Pair(-i, -j))
+            }
+        }
+        locations.remove(location)
+        return locations.filter { isInGrid(gridSize, it) }.toSet()
+    }
+
+
 
     fun getNeighbours(location: Pair<Int, Int>): Array<Pair<Int, Int>> {
         var result = Array(4) {Pair(0, 0)}

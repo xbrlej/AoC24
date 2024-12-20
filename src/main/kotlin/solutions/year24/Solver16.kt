@@ -33,8 +33,9 @@ class Solver16(val grid: Array<Array<Char>>) {
         val graph = createGraph(grid, endLocs[0])
         val startPoint = toGraphPoint(startLocs[0], startDirection, grid[0].size)
         val endPoints = basicDirections.map{ toGraphPoint(endLocs[0], it, grid[0].size) }
-        val dijkstraDistanceAndPaths = GraphUtils.dijkstraWithLoopsAndPathCount(graph, startPoint, endPoints[0])
-        val countOfPoints = dijkstraDistanceAndPaths.second.map { it / 4 }.toSet().size
+        val dijkstraDistanceAndPaths = GraphUtils.dijkstraWithLoopsAndPaths(graph, startPoint, endPoints[0])
+        val prevs = dijkstraDistanceAndPaths.second.map { it.second.toSet() }.reduce { s1, s2 -> s1.union(s2) }
+        val countOfPoints = prevs.map { it / 4 }.toSet().size
         return countOfPoints.toLong()
     }
 
