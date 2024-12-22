@@ -38,7 +38,7 @@ class Solver18 {
             }
             paths[loc] = locPaths
         }
-        val bfsDistances = GraphUtils.breadthFirstSearchDistances(paths, Pair(0, 0))
+        val (bfsDistances, _) = GraphUtils.breadthFirstSearchDistancesAndPrevMap(paths, Pair(0, 0))
         if (bfsDistances.contains(Pair(70, 70))) {
             return bfsDistances[Pair(70, 70)]!!.toLong()
         }

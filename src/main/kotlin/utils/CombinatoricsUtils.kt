@@ -8,6 +8,10 @@ object CombinatoricsUtils {
         return IntRange(0, maxNumber).map { it.toUInt().toString(radix).padStart(size, '0') }
     }
 
+    fun <T, U> cartesianProduct(c1: Collection<T>, c2: Collection<U>): List<Pair<T, U>> {
+        return c1.flatMap { lhsElem -> c2.map { rhsElem -> lhsElem to rhsElem } }
+    }
+
     fun<T> getCombinations(array: Array<T>, combSize: Int): MutableList<List<T>> {
         val empty: T = null as T
         val currentComb = mutableListOf<T>()

@@ -1,16 +1,15 @@
 package utils
 
 import java.util.*
-import kotlin.collections.Map.Entry
 
 object GraphUtils {
 
-    fun<T> breadthFirstSearchDistances(graph: Map<T, List<T>>, start: T): Map<T, Int> {
+    fun<T> breadthFirstSearchDistancesAndPrevMap(graph: Map<T, List<T>>, start: T): Pair<Map<T, Int>, Map<T, List<T>>> {
         val queue = LinkedList<T>()
-        val visitedFromPrevious = mutableMapOf<T, T?>()
+        val visitedFromPrevious = mutableMapOf<T, MutableList<T>>()
         val distances = mutableMapOf<T, Int>().withDefault { Int.MAX_VALUE }
         queue.add(start)
-        visitedFromPrevious[start] = null
+        visitedFromPrevious[start] = mutableListOf()
         distances[start] = 0
 
         while (queue.isNotEmpty()) {
@@ -18,12 +17,34 @@ object GraphUtils {
             graph[node]?.forEach {
                 if (!visitedFromPrevious.contains(it)) {
                     queue.add(it)
-                    visitedFromPrevious[it] = node
+                    visitedFromPrevious[it] = mutableListOf(node)
                     distances[it] = distances[node]?.plus(1)!!
+                } else if (distances[it] == distances[node]?.plus(1)!!) {
+                    visitedFromPrevious[it]?.add(node)
                 }
             }
         }
-        return distances
+        return Pair(distances, visitedFromPrevious)
+    }
+
+    fun<T> getGraphPaths(prevMap: Map<T, List<T>>, start: T, end: T, length: Int): Set<List<T>> {
+        val tmpPath = MutableList<T>(length + 1) { null as T }
+        tmpPath[0] = start
+        tmpPath[length] = end
+        val paths = mutableSetOf<List<T>>()
+        getPathsRec(prevMap, end, length, 1, tmpPath, paths)
+        return paths
+    }
+
+    private fun<T> getPathsRec(prevMap: Map<T, List<T>>, tail: T, length: Int, index: Int, tmpPath: MutableList<T>, paths: MutableSet<List<T>>) {
+        if (length <= index) {
+            paths.add(tmpPath.toList())
+            return
+        }
+        for (prev in prevMap[tail]!!) {
+            tmpPath[length - index] = prev
+            getPathsRec(prevMap, prev, length, index + 1, tmpPath, paths)
+        }
     }
 
     fun<T> dijkstraWithLoops(graph: Map<T, List<Pair<T, Int>>>, start: T): Map<T, Int> {
