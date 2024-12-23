@@ -18,7 +18,7 @@ object CombinatoricsUtils {
         for (i in IntRange(0, combSize-1)) {
             currentComb.add(empty)
         }
-        var result = mutableListOf<List<T>>()
+        val result = mutableListOf<List<T>>()
         combinationRecursiveUtil(array, array.size, combSize, currentComb, 0, 0, result)
         return result
     }
