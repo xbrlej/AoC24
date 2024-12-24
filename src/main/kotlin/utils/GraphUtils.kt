@@ -1,6 +1,7 @@
 package utils
 
 import java.util.*
+import kotlin.collections.HashSet
 
 object GraphUtils {
 
@@ -112,5 +113,55 @@ object GraphUtils {
             prevs = newPrevs
         }
         return Pair(endDistAndPrev.first, prevList)
+    }
+
+    // Requires (x, x) connection in graph to exist
+    inline fun<reified T> cliquesOfFixedSize(graph: Map<T, List<T>>, size: Int): Set<Set<T>> {
+        val allCombinations = CombinatoricsUtils.getCombinations(graph.keys.toTypedArray(), size)
+        val cliques = mutableSetOf<Set<T>>()
+        for (combination in allCombinations) {
+            var isClique = true
+            for (element in combination) {
+                if (!graph[element]!!.containsAll(combination)) {
+                    isClique = false
+                    break
+                }
+            }
+            if (isClique) {
+                cliques.add(combination.toSet())
+            }
+        }
+        return cliques
+    }
+
+    fun<T> maximumClique(graph: Map<T, List<T>>): Set<T> {
+        val allCliques = allCliquesBronKerboschMethod(mutableSetOf(), graph.keys.toMutableSet(), mutableSetOf(), graph)
+        return allCliques.sortedByDescending { it.size }[0]
+    }
+
+
+    // Bron Kerbosch Algorithm (currentClique = R, potentialVertical = P, notIncluded = X)
+    // Pseudocode https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
+    private fun<T> allCliquesBronKerboschMethod(currentClique: Set<T>, potentialVertices: MutableSet<T>, notIncluded: MutableSet<T>, graph: Map<T, List<T>>): Set<Set<T>> {
+        val cliques = mutableSetOf<Set<T>>()
+        if (potentialVertices.isEmpty() && notIncluded.isEmpty()) {
+            cliques.add(currentClique)
+        }
+        while (potentialVertices.isNotEmpty()) {
+            val processedVertex = potentialVertices.first()
+            val newCurrent = HashSet(currentClique)
+            newCurrent.add(processedVertex)
+            val processedEdges = graph[processedVertex]!!.toMutableSet()
+            // Remove self edge if exists
+            processedEdges.remove(processedVertex)
+            val newPotential = HashSet(potentialVertices)
+            newPotential.retainAll(processedEdges)
+            val newNotIncluded = HashSet(notIncluded)
+            newNotIncluded.retainAll(processedEdges)
+            cliques.addAll(allCliquesBronKerboschMethod(newCurrent, newPotential, newNotIncluded, graph))
+            potentialVertices.remove(processedVertex)
+            notIncluded.add(processedVertex)
+        }
+        return cliques
     }
 }
